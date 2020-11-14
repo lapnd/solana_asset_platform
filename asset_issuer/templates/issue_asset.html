@@ -5,7 +5,7 @@
         <h2 class="sub-header">Issue Asset</h2>
         <div class="container col-sm-12">
 
-            <form class="form-inline">
+            <div class="form-inline">
                 <div class="form-group">
                     <label class="sr-only" for="asset_name">Asset Name</label>
                     <input type="text" class="form-control" id="asset_name" placeholder="Name">
@@ -26,8 +26,8 @@
                 </div>
                 <br/>
                 <br/>
-                <button type="submit" class="btn btn-default">Issue</button>
-            </form>
+                <button type="submit" class="btn btn-default issue-asset">Issue</button>
+            </div>
             <br/>
             <br/>
         </div>
@@ -38,7 +38,7 @@
 
 <script>
     $(document).ready(function () {
-        $('form').on('submit', function (event) {
+        $('.issue-asset').on('click', function (event) {
             let asset_amount = $('#asset_amount').val();
             if (!asset_amount) {
                 alert('Asset amount is required!');
@@ -55,6 +55,10 @@
                 alert('Asset icon is required!');
                 return
             }
+            var btn = $(this);
+            btn.html(`Issue <span class="glyphicon glyphicon-refresh spinning"></span>`);
+            btn.attr('disabled', true);
+
             $.ajax({
                 type: 'POST',
                 url: '/api/v1/issue_asset/',
@@ -70,6 +74,11 @@
             })
             .done(function (data) {
                 window.location.href = '/';
+            })
+            .fail(function(data){
+                alert("Issue asset failed!");
+                btn.html(`Issue`);
+                btn.attr('disabled', false);
             });
             event.preventDefault();
         });
